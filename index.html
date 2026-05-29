@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>English Quest: Pass Mission 60 ⭐</title>
+  <meta name="description" content="A fun revision game for P5 English — Chapters 2-5">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- ===== PARTICLES BACKGROUND ===== -->
+    <div id="particles" aria-hidden="true"></div>
+
+    <!-- ===== START SCREEN ===== -->
+    <div id="screen-start" class="screen active">
+      <div class="start-container">
+        <div class="logo-emoji">🏆</div>
+        <h1 class="game-title">English Quest</h1>
+        <p class="game-subtitle">Pass Mission 60</p>
+        <p class="game-desc">Answer questions from Chapters 2–5 to earn ⭐ stars.<br>Get <strong>60 stars</strong> to pass!</p>
+        <button id="start-btn" class="btn btn-primary btn-lg pulse-glow" onclick="startGame()">
+          🚀 Start Quest!
+        </button>
+        <button class="btn btn-ghost" onclick="showScreen('screen-tips')">
+          📝 View Writing Tips
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== MAP SCREEN ===== -->
+    <div id="screen-map" class="screen">
+      <div class="map-header">
+        <div class="score-display">
+          <span class="star-icon">⭐</span>
+          <span id="map-stars" class="star-count">0</span>
+          <span class="star-label">stars</span>
+        </div>
+        <div class="pass-meter">
+          <div class="pass-meter-label">
+            <span>Pass Goal: 60 ⭐</span>
+            <span id="pass-percent">0%</span>
+          </div>
+          <div class="progress-bar">
+            <div id="progress-fill" class="progress-fill"></div>
+            <div class="progress-marker" style="left: 60%">
+              <span class="marker-label">60</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="map-title">Choose Your Zone</h2>
+      <div id="zone-cards" class="zone-cards">
+        <!-- Zone cards rendered by JS -->
+      </div>
+
+      <div class="map-footer">
+        <button class="btn btn-ghost" onclick="showScreen('screen-tips')">📝 Writing Tips</button>
+        <button class="btn btn-ghost" onclick="showScreen('screen-start')">🏠 Home</button>
+      </div>
+    </div>
+
+    <!-- ===== QUESTION SCREEN ===== -->
+    <div id="screen-question" class="screen">
+      <div class="q-header">
+        <div class="q-zone-info">
+          <span id="q-zone-icon" class="q-zone-icon"></span>
+          <span id="q-zone-name" class="q-zone-name"></span>
+        </div>
+        <button class="btn btn-sm btn-leave" onclick="promptLeaveZone()" title="Leave Zone and forfeit run stars">🚪 Leave Zone</button>
+        <div class="q-progress-info">
+          <span id="q-progress" class="q-progress"></span>
+          <span class="q-stars-display">⭐ <span id="q-stars">0</span></span>
+        </div>
+      </div>
+
+      <!-- Passage button (for reading questions) -->
+      <div id="q-passage-btn-container" class="q-passage-btn-container hidden">
+        <button class="btn btn-ghost btn-passage pulse-glow-passage" onclick="openPassage()">
+          📖 Read Essay / Passage
+        </button>
+      </div>
+
+      <!-- Question body -->
+      <div class="q-body">
+        <div id="q-instruction" class="q-instruction"></div>
+        <div id="q-sentence" class="q-sentence hidden"></div>
+        <p id="q-text" class="q-text"></p>
+        <div id="q-options" class="q-options">
+          <!-- Option buttons rendered by JS -->
+        </div>
+      </div>
+
+      <!-- Feedback panel -->
+      <div id="q-feedback" class="q-feedback hidden">
+        <div id="q-feedback-icon" class="q-feedback-icon"></div>
+        <p id="q-feedback-text" class="q-feedback-text"></p>
+        <div id="q-explanation" class="q-explanation"></div>
+        <button id="q-next-btn" class="btn btn-primary" onclick="nextQuestion()">
+          Next →
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== ZONE COMPLETE SCREEN ===== -->
+    <div id="screen-zone-complete" class="screen">
+      <div class="zone-complete-container">
+        <div id="zone-complete-icon" class="zone-complete-icon">🎉</div>
+        <h2 id="zone-complete-title" class="zone-complete-title">Zone Complete!</h2>
+        <p id="zone-complete-name" class="zone-complete-name"></p>
+        <div class="zone-score-card">
+          <div class="zone-score-row">
+            <span>Questions answered correctly</span>
+            <span id="zone-correct">0</span>
+          </div>
+          <div class="zone-score-row">
+            <span>Stars earned this zone</span>
+            <span id="zone-earned-stars">0 ⭐</span>
+          </div>
+          <div class="zone-score-row total">
+            <span>Total stars so far</span>
+            <span id="zone-total-stars">0 ⭐</span>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-lg" onclick="returnToMap()">
+          🗺️ Back to Map
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== FINAL RESULTS SCREEN ===== -->
+    <div id="screen-results" class="screen">
+      <div class="results-container">
+        <div id="results-emoji" class="results-emoji">🏆</div>
+        <h2 id="results-title" class="results-title">Quest Complete!</h2>
+        <div class="results-score">
+          <div class="results-stars-big">
+            <span>⭐</span>
+            <span id="results-stars">0</span>
+            <span class="results-total">/ 100</span>
+          </div>
+          <p id="results-message" class="results-message"></p>
+        </div>
+        <div class="results-breakdown" id="results-breakdown">
+          <!-- Zone breakdown rendered by JS -->
+        </div>
+        <div class="results-actions">
+          <button class="btn btn-primary btn-lg" onclick="restartGame()">🔄 Play Again</button>
+          <button class="btn btn-ghost" onclick="showScreen('screen-tips')">📝 Review Writing Tips</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== WRITING TIPS SCREEN ===== -->
+    <div id="screen-tips" class="screen">
+      <div class="tips-container">
+        <div class="tips-header">
+          <h2>📝 Writing Tips & Exam Rules</h2>
+          <button class="btn btn-sm btn-ghost" onclick="goBack()">← Back</button>
+        </div>
+
+        <div class="tips-section">
+          <h3>📐 Safe Writing Structure</h3>
+          <div id="tips-structure" class="tips-cards">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <div class="tips-section">
+          <h3>✏️ Useful Sentence Starters</h3>
+          <div id="tips-starters" class="tips-starters">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <div class="tips-section">
+          <h3>⚡ 5 Exam Rules to Remember</h3>
+          <div id="tips-rules" class="tips-rules">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <div class="tips-section">
+          <h3>📄 Sample Diary Entry</h3>
+          <div id="tips-sample" class="tips-sample">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== FLOATING UTILITIES ===== -->
+  <div class="floating-utilities">
+    <button id="mute-btn" class="utility-btn" onclick="toggleMute()" title="Toggle Sound">🔊</button>
+    <button id="settings-btn" class="utility-btn" onclick="openSettings()" title="Settings">⚙️</button>
+  </div>
+
+  <!-- ===== SETTINGS MODAL ===== -->
+  <div id="modal-settings" class="modal-overlay hidden" onclick="closeSettingsOnOuterClick(event)">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>⚙️ Quest Settings</h3>
+        <button class="modal-close" onclick="closeSettings()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="setting-row">
+          <div class="setting-info">
+            <span class="setting-label">Extended Question Bank</span>
+            <span class="setting-desc">Add 40+ extra practice questions to challenge yourself!</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="extended-toggle" onchange="toggleExtendedMode(this.checked)">
+            <span class="slider round"></span>
+          </label>
+        </div>
+        <div class="setting-row">
+          <div class="setting-info">
+            <span class="setting-label">Sound &amp; Music</span>
+            <span class="setting-desc">Enable retro-synthesized background music and sound effects.</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="sound-toggle" checked onchange="toggleSoundFromSettings(this.checked)">
+            <span class="slider round"></span>
+          </label>
+        </div>
+        <div class="setting-row reset-row">
+          <div class="setting-info">
+            <span class="setting-label">Reset All Progress</span>
+            <span class="setting-desc">Clear your stars, scores, and completed zones to start fresh.</span>
+          </div>
+          <button class="btn btn-sm btn-danger" onclick="confirmResetProgress()">Reset Progress</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== LEAVE CONFIRMATION MODAL ===== -->
+  <div id="modal-leave" class="modal-overlay hidden">
+    <div class="modal-card alert-card">
+      <div class="modal-header">
+        <h3>🚪 Leave Zone?</h3>
+      </div>
+      <div class="modal-body text-center">
+        <p class="alert-text">Are you sure you want to leave this zone? You will forfeit any stars earned in this current run.</p>
+        <div class="alert-actions">
+          <button class="btn btn-primary" onclick="cancelLeaveZone()">No, Keep Playing</button>
+          <button class="btn btn-ghost btn-danger-ghost" onclick="confirmLeaveZone()">Yes, Forfeit &amp; Leave</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PASSAGE MODAL ===== -->
+  <div id="modal-passage" class="modal-overlay hidden" onclick="closePassageOnOuterClick(event)">
+    <div class="modal-card passage-modal-card">
+      <div class="modal-header">
+        <h3>📖 Reading Essay / Passage</h3>
+        <button class="modal-close" onclick="closePassage()">&times;</button>
+      </div>
+      <div class="modal-body passage-modal-body">
+        <div id="modal-passage-content" class="passage-text"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="closePassage()">Close &amp; Answer Questions</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confetti canvas for celebrations -->
+  <canvas id="confetti-canvas" aria-hidden="true"></canvas>
+
+  <script src="questions.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
